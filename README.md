@@ -75,5 +75,24 @@
   * ```df['preco_corrigido'] = df['preco'].apply(lambda x: x / 1000 if x > 1000 else x)```
   * ```print(df)```
 ## ✅ Zero ou negativo onde não deveria (ex: tempo, distância)
-
+* Como detectar no Pandas.
+  * ```df[df['coluna'] <= 0]```
+* Substituir por NaN (para tratar depois).
+  * ```import numpy as np  df['coluna'] = df['coluna'].apply(lambda x: x if x > 0 else np.nan)```
+* Substituir por média ou mediana.
+  * ```mediana = df['coluna'][df['coluna'] > 0].median()```
+  * ```df['coluna'] = df['coluna'].apply(lambda x: mediana if x <= 0 else x)```
+* Remover linhas com valores inválidos.
+  * ```df = df[df['coluna'] > 0]```
+* Substituir por valor padrão (se souber o correto).
+  * ```df['tempo'] = df['tempo'].replace(0, 10)```
+* Aplicação geral para várias colunas.
+  * ```def corrigir_valores_negativos_ou_zero(df, colunas):```
+  * ```for coluna in colunas:```
+  * ```df[coluna] = df[coluna].apply(lambda x: np.nan if x <= 0 else x)```
+  * ```return df```
+  * ```df = corrigir_valores_negativos_ou_zero(df, ['tempo', 'distancia', 'peso'])```
+* Dica para investigar.
+  * ```df['coluna'].value_counts().sort_index()```
+  * ```df['coluna'].describe()```
 ## ✅ Duplicatas sem ser idênticas (ex: registros com nomes quase iguais, mas não exatos)
