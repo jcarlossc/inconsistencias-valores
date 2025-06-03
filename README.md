@@ -96,3 +96,29 @@
   * ```df['coluna'].value_counts().sort_index()```
   * ```df['coluna'].describe()```
 ## ✅ Duplicatas sem ser idênticas (ex: registros com nomes quase iguais, mas não exatos)
+* Normalizar os textos (mínimo necessário).
+  * ```df['nome_limpo'] = df['nome'].str.lower().str.strip().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')```
+* Detectar duplicatas com base no nome normalizado.
+  * ```duplicados = df[df.duplicated('nome_limpo', keep=False)]```
+* Verificar similaridade com fuzzy matching (opcional e poderoso).
+  * ```from fuzzywuzzy import fuzz```
+  * ```from fuzzywuzzy import process```
+  * ```# Exemplo: comparar todos contra todos```
+  * ```for i, nome1 in enumerate(df['nome_limpo']):```
+  * ```for j, nome2 in enumerate(df['nome_limpo']):```
+  * ```if i != j and fuzz.ratio(nome1, nome2) > 90:```
+  * ```print(f'Possível duplicata: "{df["nome"].iloc[i]}" ~ "{df["nome"].iloc[j]}"')```
+* Exemplo completo resumido.
+  * ```import pandas as pd```
+  * ```import unicodedata```
+  * ```# Função para normalizar texto```
+  * ```def normalizar_texto(texto):```
+  * ```if not isinstance(texto, str):```
+  * ```return texto```
+  * ```texto = texto.lower().strip()```
+  * ```texto = unicodedata.normalize('NFKD', texto).encode('ascii', errors='ignore').decode('utf-8')```
+  * ```return texto```
+  * ```# Aplicar```
+  * ```df['nome_limpo'] = df['nome'].apply(normalizar_texto)```
+  * ```# Ver duplicatas```
+  * ```duplicados = df[df.duplicated('nome_limpo', keep=False)]```
