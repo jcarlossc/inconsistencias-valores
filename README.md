@@ -54,7 +54,26 @@
   * ```df['salario'].describe()```
   * ```df['idade'].value_counts(dropna=False).sort_index()```
 ## ✅ Erros de digitação numérica (ex: 1,0000 vs. 10000)
-
+* Verifique o separador decimal do seu dataset.
+  * ```df.head()```
+* Substituir vírgulas por pontos (para conversão correta).
+  * ```df['coluna'] = df['coluna'].str.replace(',', '.')```
+  * ```df['coluna'] = pd.to_numeric(df['coluna'], errors='coerce')```
+* Corrigir erros de escala. Às vezes os dados têm números 100x ou 1000x maiores do que deveriam. Se encontrar 10000, pode ser erro de digitação.
+  * ```df['coluna'].describe()```
+* Corrigir com base em faixa esperada.
+  * ```df['coluna_corrigida'] = df['coluna'].apply(lambda x: x / 1000 if x > 1000 else x)```. Ou aplicar regras específicas baseadas em contexto.
+* Exemplo completo.
+  * ```import pandas as pd```
+  * ```df = pd.DataFrame({```
+  * ```'preco': ['1,50', '1500', '2,75', '20000']```
+  * ```})```
+  * ```# Corrigir separador decimal```
+  * ```df['preco'] = df['preco'].str.replace(',', '.')```
+  * ```df['preco'] = pd.to_numeric(df['preco'], errors='coerce')```
+  * ```# Corrigir valores fora da faixa (ex: dividir os muito grandes)```
+  * ```df['preco_corrigido'] = df['preco'].apply(lambda x: x / 1000 if x > 1000 else x)```
+  * ```print(df)```
 ## ✅ Zero ou negativo onde não deveria (ex: tempo, distância)
 
 ## ✅ Duplicatas sem ser idênticas (ex: registros com nomes quase iguais, mas não exatos)
